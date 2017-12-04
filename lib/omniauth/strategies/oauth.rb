@@ -18,6 +18,8 @@ module OmniAuth
       attr_reader :access_token
 
       def consumer
+        AUTH_LOG.info "-----------------------------"
+        AUTH_LOG.info "consumer_key: #{options.consumer_key}, consumer_secret: #{options.consumer_secret}, client_options: #{options.client_options}"
         consumer = ::OAuth::Consumer.new(options.consumer_key, options.consumer_secret, options.client_options)
         consumer.http.open_timeout = options.open_timeout if options.open_timeout
         consumer.http.read_timeout = options.read_timeout if options.read_timeout
@@ -25,7 +27,6 @@ module OmniAuth
       end
 
       def request_phase # rubocop:disable MethodLength
-        AUTH_LOG.info "-----------------------------"
         AUTH_LOG.info "oauth_callback: #{callback_url}, request_params: #{options.request_params.to_h.to_s}"
         request_token = consumer.get_request_token({:oauth_callback => callback_url}, options.request_params)
         session["oauth"] ||= {}
